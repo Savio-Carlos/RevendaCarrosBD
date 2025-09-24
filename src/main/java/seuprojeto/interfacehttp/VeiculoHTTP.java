@@ -4,7 +4,7 @@ package seuprojeto.interfacehttp;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import seuprojeto.exception.ValidacaoExcecao;
+import seuprojeto.excecao.ValidacaoExcecao;
 import seuprojeto.negocio.bo.Veiculo;
 import seuprojeto.negocio.servicos.VeiculoServico;
 

@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import seuprojeto.negocio.bo.Garantia;
-import seuprojeto.exception.ValidacaoExcecao;
+import seuprojeto.excecao.ValidacaoExcecao;
 import seuprojeto.negocio.servicos.GarantiaServico;
 
 import java.io.IOException;

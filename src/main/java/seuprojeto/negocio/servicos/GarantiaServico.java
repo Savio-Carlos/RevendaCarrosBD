@@ -3,7 +3,7 @@ package seuprojeto.negocio.servicos;
 
 import seuprojeto.negocio.bo.Garantia;
 import seuprojeto.negocio.dao.GarantiaDAO;
-import seuprojeto.exception.ValidacaoExcecao;
+import seuprojeto.excecao.ValidacaoExcecao;
 
 import java.sql.SQLException;
 

@@ -7,7 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import seuprojeto.negocio.bo.*;
-import seuprojeto.exception.ValidacaoExcecao;
+import seuprojeto.excecao.ValidacaoExcecao;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

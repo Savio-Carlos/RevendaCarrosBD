@@ -5,7 +5,7 @@ import seuprojeto.negocio.bo.Venda;
 import seuprojeto.infra.bd.ConexaoBancoDados;
 import seuprojeto.negocio.dao.VendaDAO;
 import seuprojeto.negocio.dao.VeiculoDAO; // Importe o VeiculoDAO
-import seuprojeto.exception.ValidacaoExcecao;
+import seuprojeto.excecao.ValidacaoExcecao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

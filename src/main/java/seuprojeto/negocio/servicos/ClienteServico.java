@@ -6,7 +6,7 @@ import seuprojeto.infra.bd.ConexaoBancoDados;
 import seuprojeto.negocio.dao.ClienteDAO;
 import seuprojeto.negocio.dao.PessoaDAO;
 import seuprojeto.negocio.dao.TelefoneDAO;
-import seuprojeto.exception.ValidacaoExcecao;
+import seuprojeto.excecao.ValidacaoExcecao;
 import seuprojeto.negocio.dao.EmailDAO;
 
 import java.sql.Connection;

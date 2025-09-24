@@ -4,7 +4,7 @@ package seuprojeto.negocio.servicos;
 import seuprojeto.negocio.bo.Veiculo;
 import seuprojeto.infra.bd.ConexaoBancoDados;
 import seuprojeto.negocio.dao.VeiculoDAO;
-import seuprojeto.exception.ValidacaoExcecao;
+import seuprojeto.excecao.ValidacaoExcecao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
