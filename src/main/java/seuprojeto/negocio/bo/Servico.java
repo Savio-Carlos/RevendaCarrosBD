@@ -10,8 +10,6 @@ public class Servico {
     public Servico() {
     }
 
-    // --- Getters e Setters ---
-
     public int getIdServico() {
         return idServico;
     }

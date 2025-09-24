@@ -1,4 +1,3 @@
-// Pacote: seuprojeto.servico
 package seuprojeto.negocio.servicos;
 
 import seuprojeto.negocio.bo.Garantia;

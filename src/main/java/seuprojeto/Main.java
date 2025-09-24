@@ -10,7 +10,7 @@ import seuprojeto.interfacehttp.FuncionarioHTTP;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import seuprojeto.interfacehttp.VendaHTTP;
-import seuprojeto.interfacehttp.NluHTTP;
+import seuprojeto.interfacehttp.AzureHTTP;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -24,7 +24,8 @@ public class Main {
         server.createContext("/api/vendas", new VendaHTTP());
         server.createContext("/api/enderecos", new EnderecoHTTP());
         server.createContext("/api/funcionarios", new FuncionarioHTTP());
-        server.createContext("/api/nlu", new NluHTTP());
+    // Endpoint Azure
+    server.createContext("/api/azure", new AzureHTTP());
 
         server.setExecutor(null);
         server.start();

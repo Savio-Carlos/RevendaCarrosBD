@@ -1,4 +1,3 @@
-// Pacote: com.seuprojeto.handler
 package seuprojeto.interfacehttp;
 
 import com.google.gson.Gson;
@@ -7,6 +6,7 @@ import com.sun.net.httpserver.HttpHandler;
 import seuprojeto.excecao.ValidacaoExcecao;
 import seuprojeto.negocio.bo.Veiculo;
 import seuprojeto.negocio.servicos.VeiculoServico;
+import seuprojeto.negocio.validacao.Validador;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,73 +25,76 @@ public class VeiculoHTTP implements HttpHandler {
         String metodo = exchange.getRequestMethod();
 
         if ("OPTIONS".equalsIgnoreCase(metodo)) {
-            handleOptionsRequest(exchange);
+        tratarOptions(exchange);
             return;
         }
 
         if ("GET".equalsIgnoreCase(metodo)) {
-            handleGetRequest(exchange);
+        tratarGet(exchange);
         } else if ("POST".equalsIgnoreCase(metodo)) {
-            handlePostRequest(exchange);
+        tratarPost(exchange);
         } else {
-            handleMethodNotAllowed(exchange);
+        metodoNaoPermitido(exchange);
         }
     }
-    private void handleOptionsRequest(HttpExchange exchange) throws IOException {
+    private void tratarOptions(HttpExchange exchange) throws IOException {
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");
-        exchange.sendResponseHeaders(204, -1); // 204 No Content
+        exchange.sendResponseHeaders(204, -1);
     }
-    private void handleGetRequest(HttpExchange exchange) throws IOException {
+    private void tratarGet(HttpExchange exchange) throws IOException {
         try {
             String path = exchange.getRequestURI().getPath();
             String[] pathParts = path.split("/");
 
-            // Se o path for /api/veiculos/{chassi}, o tamanho será 4
+            // se o path for /api/veiculos/{chassi}, o tamanho sera 4
             if (pathParts.length == 4) {
                 String chassi = pathParts[3];
                 Veiculo veiculo = veiculoServico.buscarPorChassi(chassi);
 
                 if (veiculo != null) {
-                    sendJsonResponse(exchange, 200, veiculo);
+                    enviarJson(exchange, 200, veiculo);
                 } else {
-                    sendErrorResponse(exchange, 404, "Veiculo nao encontrado.");
+                    enviarErro(exchange, 404, "Veiculo nao encontrado.");
                 }
-            } else { // Se for /api/veiculos, o tamanho será 3
+            } else { // se for /api/veiculos, o tamanho sera 3
                 List<Veiculo> veiculos = veiculoServico.buscarTodos();
-                sendJsonResponse(exchange, 200, veiculos);
+                enviarJson(exchange, 200, veiculos);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            sendErrorResponse(exchange, 500, "Erro interno no servidor ao acessar o banco de dados.");
+            enviarErro(exchange, 500, "Erro interno no servidor ao acessar o banco de dados.");
         }
     }
 
-    private void handlePostRequest(HttpExchange exchange) throws IOException {
+    private void tratarPost(HttpExchange exchange) throws IOException {
         try {
             InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
             Veiculo veiculo = gson.fromJson(isr, Veiculo.class);
 
-            // Chamada ao método correto no serviço!
+            if (veiculo == null) {
+                throw new ValidacaoExcecao("Payload de veiculo ausente");
+            }
+
+            // Delega validacoes e cadastro ao serviço
             veiculoServico.cadastrarVeiculo(veiculo);
 
-            sendErrorResponse(exchange, 201, "Veiculo criado com sucesso!");
+            enviarErro(exchange, 201, "Veiculo criado com sucesso!");
 
         } catch (ValidacaoExcecao e) {
-            sendErrorResponse(exchange, 400, "Erro de validacao: " + e.getMessage());
+            enviarErro(exchange, 400, "Erro de validacao: " + e.getMessage());
         } catch (SQLException e) {
             e.printStackTrace();
-            sendErrorResponse(exchange, 500, "Erro interno no servidor ao acessar o banco de dados.");
+            enviarErro(exchange, 500, "Erro interno no servidor ao acessar o banco de dados.");
         }
     }
 
-    private void handleMethodNotAllowed(HttpExchange exchange) throws IOException {
-        sendErrorResponse(exchange, 405, "Metodo nao permitido");
+    private void metodoNaoPermitido(HttpExchange exchange) throws IOException {
+        enviarErro(exchange, 405, "Metodo nao permitido");
     }
 
-    // Métodos auxiliares para enviar respostas
-    private void sendJsonResponse(HttpExchange exchange, int statusCode, Object data) throws IOException {
+    private void enviarJson(HttpExchange exchange, int statusCode, Object data) throws IOException {
         String jsonResponse = gson.toJson(data);
         byte[] responseBytes = jsonResponse.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
@@ -101,7 +104,7 @@ public class VeiculoHTTP implements HttpHandler {
         }
     }
 
-    private void sendErrorResponse(HttpExchange exchange, int statusCode, String message) throws IOException {
+    private void enviarErro(HttpExchange exchange, int statusCode, String message) throws IOException {
         byte[] responseBytes = message.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         exchange.sendResponseHeaders(statusCode, responseBytes.length);

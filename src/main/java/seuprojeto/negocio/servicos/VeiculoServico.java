@@ -5,6 +5,7 @@ import seuprojeto.negocio.bo.Veiculo;
 import seuprojeto.infra.bd.ConexaoBancoDados;
 import seuprojeto.negocio.dao.VeiculoDAO;
 import seuprojeto.excecao.ValidacaoExcecao;
+import seuprojeto.negocio.validacao.Validador;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,32 +20,51 @@ public class VeiculoServico {
         this.veiculoDAO = new VeiculoDAO();
     }
 
-    // --- SERVIÇO DE TRANSAÇÃO: CADASTRAR VEÍCULO ---
+    // cadastrar veiculo
     public void cadastrarVeiculo(Veiculo veiculo) throws ValidacaoExcecao, SQLException {
-        // 1. Validação das Regras de Negócio
-        if (veiculo.getNumChassi() == null || veiculo.getNumChassi().trim().length() != 17) {
-            throw new ValidacaoExcecao("O número do chassi é obrigatório e deve conter 17 caracteres.");
+        if (veiculo == null) {
+            throw new ValidacaoExcecao("Dados do veículo não fornecidos.");
         }
-        if (veiculo.getPlaca() == null || veiculo.getPlaca().trim().length() != 7) {
-            throw new ValidacaoExcecao("A placa é obrigatória e deve conter 7 caracteres.");
+        // Chassi
+        String chassi = veiculo.getNumChassi();
+        if (chassi == null || chassi.isBlank()) {
+            throw new ValidacaoExcecao("Número do chassi é obrigatório.");
         }
-        if (veiculo.getAnoModelo() <= 1900 || veiculo.getAnoModelo() > Year.now().getValue() + 1) {
-            throw new ValidacaoExcecao("Ano do modelo inválido.");
+        chassi = chassi.toUpperCase().replaceAll("\\s+", "");
+        if (!Validador.vin(chassi)) {
+            throw new ValidacaoExcecao("Chassi invalido: deve ter 17 caracteres (A-H,J-N,P,R-Z,0-9)");
         }
+        veiculo.setNumChassi(chassi);
+
+        // Placa
+        String placa = veiculo.getPlaca();
+        if (placa == null || placa.isBlank()) {
+            throw new ValidacaoExcecao("Placa é obrigatória.");
+        }
+        placa = placa.toUpperCase().replaceAll("[^A-Z0-9]", "");
+        if (!Validador.placa(placa)) {
+            throw new ValidacaoExcecao("Placa invalida: use ABC1234 ou ABC1D23");
+        }
+        veiculo.setPlaca(placa);
+
+        // Preço e ano
         if (veiculo.getPrecoVeiculo() <= 0) {
             throw new ValidacaoExcecao("O preço do veículo deve ser maior que zero.");
         }
-        // ... (outras validações que você já tinha)
+        int currentYear = Year.now().getValue();
+        if (veiculo.getAnoModelo() < 1950 || veiculo.getAnoModelo() > currentYear + 1) {
+            throw new ValidacaoExcecao("Ano do modelo inválido.");
+        }
 
-        // 2. Lógica de Transação
+        // logica de Transação
         Connection conn = null;
         try {
             conn = ConexaoBancoDados.criarConexao();
-            conn.setAutoCommit(false); // Inicia a transação
+            conn.setAutoCommit(false);
 
             veiculoDAO.salvar(veiculo, conn);
 
-            conn.commit(); // Finaliza a transação com sucesso
+            conn.commit();
 
         } catch (SQLException e) {
             if (conn != null) {
@@ -58,7 +78,6 @@ public class VeiculoServico {
         }
     }
 
-    // --- SERVIÇOS DE CONSULTA ---
     public List<Veiculo> buscarTodos() throws SQLException {
         return veiculoDAO.buscarTodos();
     }

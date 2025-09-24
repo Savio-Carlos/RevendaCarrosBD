@@ -2,7 +2,7 @@ package seuprojeto.negocio.bo;
 
 public class Endereco {
     private int idEndereco;
-    private String logradouroCEP; // Logradouro_CEP
+    private String logradouroCEP;
     private String numeroEndereco;
     private String complementoEndereco;
     private String referencia;

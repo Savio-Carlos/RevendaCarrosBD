@@ -1,103 +1,34 @@
+INSERT INTO statusVeiculo (idStatusVeiculo, status) VALUES (1, 'Disponível');
+INSERT INTO statusVeiculo (idStatusVeiculo, status) VALUES (2, 'Vendido');
 
-USE concessionaria_db;
+INSERT INTO Cargo (idCargo, nomeCargo) VALUES (1, 'Vendedor');
+ 
+INSERT INTO TipoCombustivel (idtipoCombustivel, tipoCombustivel) VALUES (1, 'Flex (Gasolina/Etanol)');
+INSERT INTO TipoCombustivel (idtipoCombustivel, tipoCombustivel) VALUES (2, 'Diesel');
+INSERT INTO TipoCombustivel (idtipoCombustivel, tipoCombustivel) VALUES (3, 'Elétrico');
+INSERT INTO TipoCombustivel (idtipoCombustivel, tipoCombustivel) VALUES (4, 'Híbrido');
 
-INSERT INTO UF (siglaUF, nomeUF) VALUES ('PR', 'Paraná');
--- Agora, defina a variável do cargo que você quer usar
-SET @idCargoVendedor = 2;
+INSERT INTO Garantia (idGarantia, dataInicio, kmLimiteRevisao, statusGarantia, dataExpiracaoGarantia) 
+VALUES (1, '2025-09-22', 10000, 'Fábrica 2 Anos', '2027-09-22');
+INSERT INTO Garantia (idGarantia, dataInicio, kmLimiteRevisao, statusGarantia, dataExpiracaoGarantia) 
+VALUES (2, '2025-09-22', 5000, 'Loja 1 Ano (Usado)', '2026-09-22');
 
--- Re-execute o bloco de inserção da funcionária Ana
--- (Supondo que @idEnderecoFunc2 já foi definido corretamente)
-INSERT INTO Pessoa (TipoPessoa, idEndereco, telefone, email) VALUES
-('F', @idEnderecoFunc2, '45988776655', 'vendedora.ana@concessionaria.com');
-SET @idPessoaAna = LAST_INSERT_ID();
+INSERT INTO Pessoa (TipoPessoa, email, telefone) VALUES ('F', 'joao.silva@email.com', '11987654321');
+SET @vendedor1_id = LAST_INSERT_ID();
 
-INSERT INTO PessoaFisica (idPessoaFisica, nome, CPF, dataNascimento) VALUES
-(@idPessoaAna, 'Ana Pereira', '55566677788', '1992-11-20');
+INSERT INTO PessoaFisica (idPessoaFisica, nome, CPF, dataNascimento) 
+VALUES (@vendedor1_id, 'João da Silva', '11122233344', '1985-02-15');
 
--- Agora este comando deve funcionar, pois @idCargoVendedor tem um valor.
-INSERT INTO Funcionario (idFuncionario, senhaHash, dataAdmissao, status, idCargo) VALUES
-(@idPessoaAna, 'senha_hash_placeholder_456', '2021-03-22', TRUE, @idCargoVendedor);
-
-INSERT INTO Cidade (nomeCidade, UF_siglaUF) VALUES ('Foz do Iguaçu', 'PR');
-SET @idCidadeFoz = LAST_INSERT_ID();
-
-INSERT INTO Bairro (nomeBairro) VALUES ('Centro'), ('Vila A'), ('Jardim Panorama');
-SET @idBairroCentro = 1;
-SET @idBairroVilaA = 2;
-SET @idBairroPanorama = 3;
-
-INSERT INTO SiglaLogradouro (siglaLogradouro, nomeSigla) VALUES ('R', 'Rua'), ('Av', 'Avenida');
-
--- Inserindo Logradouros (Ruas/Avenidas)
-INSERT INTO Logradouro (CEP, nomeLogradouro, SiglaLogradouro_siglaLogradouro, idBairro, idCidade) VALUES
-('85851000', 'Avenida Brasil', 'Av', @idBairroCentro, @idCidadeFoz),
-('85852000', 'Rua Almirante Barroso', 'R', @idBairroCentro, @idCidadeFoz),
-('85860000', 'Avenida Garibaldi', 'Av', @idBairroVilaA, @idCidadeFoz);
-
--- Inserindo Endereços específicos para os funcionários
-INSERT INTO Endereco (Logradouro_CEP, numeroEndereco, complementoEndereco, referencia) VALUES
-('85851000', '123', 'Apto 101', 'Próximo à Praça da Paz'),
-('85852000', '456', 'Casa', 'Perto do Supermercado'),
-('85860000', '789', NULL, 'Esquina com a Rua B');
-
-SET @idEnderecoFunc1 = LAST_INSERT_ID();
-SET @idEnderecoFunc2 = @idEnderecoFunc1 + 1;
-SET @idEnderecoFunc3 = @idEnderecoFunc1 + 2;
+INSERT INTO Funcionario (idFuncionario, senhaHash, dataAdmissao, idCargo) 
+VALUES (@vendedor1_id, 'hash_senha_segura_123', '2021-08-01', 1);
 
 
--- Inserindo Cargos
-INSERT INTO Cargo (nomeCargo) VALUES ('Gerente'), ('Vendedor'), ('Mecânico');
-SET @idCargoGerente = 1;
-SET @idCargoVendedor = 2;
-SET @idCargoMecanico = 3;
+INSERT INTO Pessoa (TipoPessoa, email, telefone) VALUES ('F', 'maria.santos@email.com', '21912345678');
+SET @vendedor2_id = LAST_INSERT_ID();
 
+INSERT INTO PessoaFisica (idPessoaFisica, nome, CPF, dataNascimento) 
+VALUES (@vendedor2_id, 'Maria Oliveira Santos', '55566677788', '1992-11-30');
 
--- -----------------------------------------------------------
--- INSERINDO FUNCIONÁRIO 1: Gerente
--- -----------------------------------------------------------
--- 1. Tabela Pessoa
-INSERT INTO Pessoa (TipoPessoa, idEndereco, telefone, email) VALUES
-('F', @idEnderecoFunc1, '45999887766', 'gerente.joao@concessionaria.com');
-SET @idPessoaJoao = LAST_INSERT_ID();
+INSERT INTO Funcionario (idFuncionario, senhaHash, dataAdmissao, idCargo) 
+VALUES (@vendedor2_id, 'hash_outra_senha_456', '2022-03-10', 1);
 
--- 2. Tabela PessoaFisica
-INSERT INTO PessoaFisica (idPessoaFisica, nome, CPF, dataNascimento) VALUES
-(@idPessoaJoao, 'João da Silva', '11122233344', '1980-05-10');
-
--- 3. Tabela Funcionario
-INSERT INTO Funcionario (idFuncionario, senhaHash, dataAdmissao, status, idCargo) VALUES
-(@idPessoaJoao, 'senha_hash_placeholder_123', '2020-01-15', TRUE, @idCargoGerente);
-
-
--- -----------------------------------------------------------
--- INSERINDO FUNCIONÁRIO 2: Vendedora
--- -----------------------------------------------------------
--- 1. Tabela Pessoa
-INSERT INTO Pessoa (TipoPessoa, idEndereco, telefone, email) VALUES
-('F', @idEnderecoFunc2, '45988776655', 'vendedora.ana@concessionaria.com');
-SET @idPessoaAna = LAST_INSERT_ID();
-
--- 2. Tabela PessoaFisica
-INSERT INTO PessoaFisica (idPessoaFisica, nome, CPF, dataNascimento) VALUES
-(@idPessoaAna, 'Ana Pereira', '55566677788', '1992-11-20');
-
--- 3. Tabela Funcionario
-INSERT INTO Funcionario (idFuncionario, senhaHash, dataAdmissao, status, idCargo) VALUES
-(@idPessoaAna, 'senha_hash_placeholder_456', '2021-03-22', TRUE, @idCargoVendedor);
-
-
--- -----------------------------------------------------------
--- INSERINDO FUNCIONÁRIO 3: Mecânico
--- -----------------------------------------------------------
--- 1. Tabela Pessoa
-INSERT INTO Pessoa (TipoPessoa, idEndereco, telefone, email) VALUES
-('F', @idEnderecoFunc3, '45977665544', 'mecanico.carlos@concessionaria.com');
-SET @idPessoaCarlos = LAST_INSERT_ID();
-
--- 2. Tabela PessoaFisica
-INSERT INTO PessoaFisica (idPessoaFisica, nome, CPF, dataNascimento) VALUES
-(@idPessoaCarlos, 'Carlos de Souza', '99988877766', '1988-08-01');
-
--- 3. Tabela Funcionario
-INSERT INTO Funcionario (idFuncionario, senhaHash, dataAdmissao, status, idCargo) VALUES
-(@idPessoaCarlos, 'senha_hash_placeholder_789', '2019-07-30', TRUE, @idCargoMecanico);

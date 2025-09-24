@@ -1,4 +1,3 @@
-// Pacote: seuprojeto.classe
 package seuprojeto.negocio.bo;
 
 import java.util.ArrayList;
@@ -8,10 +7,9 @@ public class Cliente {
 
     private int idCliente;
     private String senhaHash;
-    private String email; // opcional: facilitar exibição no topo
-    private List<Telefone> telefones; // manter compatibilidade com resposta antiga
+    private String email; // opcional para exibição rápida
+    private List<Telefone> telefones; 
 
-    // Pessoa associada (PF ou PJ)
     private Pessoa pessoa;
 
     public Cliente() { }

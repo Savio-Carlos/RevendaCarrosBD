@@ -10,7 +10,6 @@ public class Pessoa {
     private int idEndereco;
     private int nroEndereco;
     private String complementoEndereco;
-    // Campos simples para compatibilidade com contrato JSON e coluna na tabela Pessoa
     private String telefone;
     private String email;
     private String cep; // vindo de Endereco.Logradouro_CEP

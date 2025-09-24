@@ -17,7 +17,6 @@ import java.util.List;
 public class PessoaDAO {
 
     public Pessoa salvar(Pessoa pessoa, Connection conn) throws SQLException {
-        // Atualizado para refletir o novo schema (idEndereco, telefone, email na tabela Pessoa)
         String sql = "INSERT INTO Pessoa (TipoPessoa, idEndereco, complementoEndereco, telefone, email) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -42,10 +41,8 @@ public class PessoaDAO {
                 pstmt.setNull(2, Types.INTEGER);
             }
 
-            // complementoEndereco (nullable)
             pstmt.setString(3, pessoa.getComplementoEndereco());
 
-            // telefone (opcional): usa campo direto ou o primeiro da lista de telefones
             String telefoneStr = pessoa.getTelefone();
             if ((telefoneStr == null || telefoneStr.isEmpty())) {
                 List<Telefone> tels = pessoa.getTelefones();
@@ -59,7 +56,6 @@ public class PessoaDAO {
                 pstmt.setNull(4, Types.VARCHAR);
             }
 
-            // email (opcional): usa campo direto ou o primeiro da lista de emails
             String emailStr = pessoa.getEmail();
             if (emailStr == null || emailStr.isEmpty()) {
                 List<Email> emails = pessoa.getEmails();
@@ -87,11 +83,10 @@ public class PessoaDAO {
     }
 
     public PessoaFisica salvarPessoaFisica(PessoaFisica pessoaFisica, Connection conn) throws SQLException {
-        // Este método espera uma transação ativa controlada pela camada de Serviço.
         String sql = "INSERT INTO PessoaFisica (idPessoaFisica, nome, CPF, dataNascimento) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, pessoaFisica.getIdPessoa()); // Usa o mesmo ID da tabela Pessoa
+            pstmt.setInt(1, pessoaFisica.getIdPessoa());
             pstmt.setString(2, pessoaFisica.getNome());
             pstmt.setString(3, pessoaFisica.getCpf());
             if (pessoaFisica.getDataNascimento() != null) {
@@ -106,11 +101,10 @@ public class PessoaDAO {
     }
 
     public PessoaJuridica salvarPessoaJuridica(PessoaJuridica pessoaJuridica, Connection conn) throws SQLException {
-        // Este método espera uma transação ativa controlada pela camada de Serviço.
         String sql = "INSERT INTO PessoaJuridica (idPessoaJuridica, CNPJ, nomeFantasia, RazaoSocial) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, pessoaJuridica.getIdPessoa()); // Usa o mesmo ID da tabela Pessoa
+            pstmt.setInt(1, pessoaJuridica.getIdPessoa());
             pstmt.setString(2, pessoaJuridica.getCnpj());
             pstmt.setString(3, pessoaJuridica.getNomeFantasia());
             pstmt.setString(4, pessoaJuridica.getRazaoSocial());

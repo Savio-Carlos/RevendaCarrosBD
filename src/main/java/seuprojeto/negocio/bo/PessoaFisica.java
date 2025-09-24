@@ -9,13 +9,10 @@ public class PessoaFisica extends Pessoa {
     private String cpf;
     private Date dataNascimento;
 
-    // Construtor
     public PessoaFisica() {
-        // Ao criar uma PessoaFisica, definimos o tipo automaticamente.
         setTipoPessoa('F');
     }
 
-    // --- Getters e Setters ---
 
     public int getIdPessoaFisica() {
         return idPessoaFisica;

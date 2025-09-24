@@ -63,7 +63,6 @@ public class ClienteDAO {
                     mapa.put(idCliente, cliente);
                 }
 
-                // telefones vindos do LEFT JOIN Telefone (pode repetir linhas)
                 int idTel = rs.getInt("idTelefone");
                 if (!rs.wasNull()) {
                     Telefone tel = new Telefone();

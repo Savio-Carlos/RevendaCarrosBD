@@ -6,15 +6,12 @@ public class ServicoRealizado {
     private double quantidade;
     private double precoUnitario;
 
-    // Chaves estrangeiras
     private int idPeca;
     private int idServico;
     private int idOrdemServico;
 
     public ServicoRealizado() {
     }
-
-    // --- Getters e Setters ---
 
     public int getIdServicosRealizados() {
         return idServicosRealizados;

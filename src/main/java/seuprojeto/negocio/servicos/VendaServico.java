@@ -6,6 +6,7 @@ import seuprojeto.infra.bd.ConexaoBancoDados;
 import seuprojeto.negocio.dao.VendaDAO;
 import seuprojeto.negocio.dao.VeiculoDAO; // Importe o VeiculoDAO
 import seuprojeto.excecao.ValidacaoExcecao;
+import seuprojeto.negocio.validacao.Validador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,11 +17,11 @@ import java.util.Date;
 public class VendaServico {
 
     private VendaDAO vendaDAO;
-    private VeiculoDAO veiculoDAO; // DAO para consultar o veículo
+    private VeiculoDAO veiculoDAO;
 
     public VendaServico() {
         this.vendaDAO = new VendaDAO();
-        this.veiculoDAO = new VeiculoDAO(); // Instancie o DAO
+        this.veiculoDAO = new VeiculoDAO();
     }
 
     public void venderCarro(Venda venda) throws SQLException, ValidacaoExcecao {
@@ -28,9 +29,14 @@ public class VendaServico {
         if (venda.getIdCliente() <= 0) throw new ValidacaoExcecao("Cliente inválido.");
         if (venda.getIdFuncionario() <= 0) throw new ValidacaoExcecao("Funcionário inválido.");
         if (venda.getNumChassiVeiculo() == null || venda.getNumChassiVeiculo().trim().isEmpty()) {
-            throw new ValidacaoExcecao("Chassi do veículo inválido.");
+            throw new ValidacaoExcecao("Chassi do veículo é obrigatório.");
         }
-        if (venda.getPrecoVendaVeiculo() <= 0) throw new ValidacaoExcecao("Preço de venda inválido.");
+        String chassi = venda.getNumChassiVeiculo().toUpperCase().replaceAll("\\s+", "");
+        if (!Validador.vin(chassi)) {
+            throw new ValidacaoExcecao("Chassi invalido: deve ter 17 caracteres (A-H,J-N,P,R-Z,0-9)");
+        }
+        venda.setNumChassiVeiculo(chassi);
+        if (venda.getPrecoVendaVeiculo() <= 0) throw new ValidacaoExcecao("Preço de venda deve ser maior que zero.");
 
         venda.setDataVenda(new Date());
 

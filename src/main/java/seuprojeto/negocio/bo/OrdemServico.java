@@ -1,4 +1,3 @@
-// Pacote: seuprojeto.classe
 package seuprojeto.negocio.bo;
 
 import java.util.Date;
@@ -18,13 +17,12 @@ public class OrdemServico {
     private int idCliente;
     private int idFuncionario;
 
-    // Relacionamento com os itens da OS
+
     private List<ServicoRealizado> servicosRealizados;
 
     public OrdemServico() {
     }
 
-    // --- Getters e Setters ---
 
     public int getIdOrdemServico() {
         return idOrdemServico;

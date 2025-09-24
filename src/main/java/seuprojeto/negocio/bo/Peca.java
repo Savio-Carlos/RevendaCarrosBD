@@ -1,4 +1,3 @@
-// Pacote: seuprojeto.classe
 package seuprojeto.negocio.bo;
 
 public class Peca {

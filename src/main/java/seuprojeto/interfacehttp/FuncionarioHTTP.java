@@ -20,35 +20,35 @@ public class FuncionarioHTTP implements HttpHandler {
         String metodo = exchange.getRequestMethod();
 
         if ("OPTIONS".equalsIgnoreCase(metodo)) {
-            handleOptionsRequest(exchange);
+        tratarOptions(exchange);
             return;
         }
 
         if ("GET".equalsIgnoreCase(metodo)) {
-            handleGet(exchange);
+        tratarGet(exchange);
         } else {
-            sendError(exchange, 405, "Metodo nao permitido");
+        enviarErro(exchange, 405, "Metodo nao permitido");
         }
     }
 
-    private void handleOptionsRequest(HttpExchange exchange) throws IOException {
+    private void tratarOptions(HttpExchange exchange) throws IOException {
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");
         exchange.sendResponseHeaders(204, -1);
     }
 
-    private void handleGet(HttpExchange exchange) throws IOException {
+    private void tratarGet(HttpExchange exchange) throws IOException {
         try {
             var lista = dao.listarResumido();
-            sendJson(exchange, 200, gson.toJson(lista));
+        enviarJson(exchange, 200, gson.toJson(lista));
         } catch (SQLException e) {
             e.printStackTrace();
-            sendError(exchange, 500, "Erro ao buscar funcionarios: " + e.getMessage());
+        enviarErro(exchange, 500, "Erro ao buscar funcionarios: " + e.getMessage());
         }
     }
 
-    private void sendJson(HttpExchange ex, int status, String json) throws IOException {
+    private void enviarJson(HttpExchange ex, int status, String json) throws IOException {
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
         ex.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         ex.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");
@@ -57,7 +57,7 @@ public class FuncionarioHTTP implements HttpHandler {
         try (OutputStream os = ex.getResponseBody()) { os.write(bytes); }
     }
 
-    private void sendError(HttpExchange ex, int status, String msg) throws IOException {
+    private void enviarErro(HttpExchange ex, int status, String msg) throws IOException {
         byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
         ex.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         ex.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");

@@ -1,4 +1,3 @@
-// Pacote: com.seuprojeto.config
 package seuprojeto.infra.bd;
 
 import java.sql.Connection;
